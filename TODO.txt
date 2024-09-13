@@ -1,0 +1,76 @@
+En début de  seance
+===================
+1) Copier le repertoire du sujet de labos :
+  - /home/TP/modules/sujets/REV/OpenGL/Labos/PyOpenGL
+dans un de vos dossiers utilisateur :
+--> cp -r /home/TP/modules/sujets/REV/OpenGL/Labos/PyOpenGL/ $HOME/chemin_acces_dossier_REV_PyOpenGL
+
+Tester les applications
+=======================
+--> python square.py
+--> python scene.py
+
+Objectifs
+=========
+1) Créer un repère de scène 3D (3 axes Ox,Oy,Oz).
+2) Créer un modèle de voiture (carroserie + 4 roues)
+3) Interagir avec le  modèle (déplacement dans le plan Oxz)
+ 
+Création des modeles
+====================
+models.py : création de modèles à partir de primitives de base (primitives.py)
+
+1) Repère de scene3D
+--------------------
+Créer un repère de scène 3D redimensionnable (size)  :
+   - def axe(size) : création d'un axe (disque+cylindre+cone)
+   - def wcs_zxy(size) : repere 3D (3 axes)
+On représentera les axes avec le code de couleur conventionnel (R,G,B) pour (Ox,Oy,Oz).
+
+2) Création du véhicule
+------------------------
+Créer un modèle de véhicule qui soit redimensionnable (size)
+  - bolt(radius, height)    : boulon (cylindres fermés)
+  - wheel(size,n_bolts=5)   : roue (tore) avec 5 boulons par défaut
+  - axe(size) : carosserie du véhicule
+  - car(size) : véhicule (carroserie + 4 roues)
+  
+Positionner correctement les boulons sur la roue
+Positionner correctement les 4 roues  sur la carrosserie
+
+Création de scene
+=================
+scene.py : intégrer les modèles dans une scène en contrôlant les déplacement de modèle et de caméra
+
+1) Intégration de modèles
+-------------------------
+Placer dans la scène les modèles (repère de scène 3D, vehicule, ....).
+
+2) Interaction clavier
+----------------------
+- visualiser ou non le repère de scène 
+- faire avancer/reculer le véhicule dans le plan (Oxz)
+- faire pivoter droite/gauche le véhicule dans le plan (Oxz)
+  
+3) Manipulation du véhicule
+---------------------------
+Déplacement du véhicule  : 
+1) avancer,reculer le véhicule (carrosserie,roues,boulons) dans une direction avec rotation des roues,boulons
+2) changement d'orientation du véhicule  : 
+    - faire pivoter  les roues avant lors du changement d'orientation
+    - repositionner les roues dans la direction de dpélacement du véhicule
+
+Archivage
+=========
+En fin de séance, déposer sur le répertoire partagé : /home/TP/TPrendu/nedelec/REV/PyOpenGL
+l'archive de votre travail à l'aide du script shell  : send_PyOpenGL.
+--> ./send_PyOpenGL
+
+Attention : le script shell doit avoir les droits en exécution :
+--> chmod u+x send_PyOpenGL
+
+Vérification de la bonne réception sour le dossier partagé :
+--> ls /home/TP/TPrendu/nedelec/REV/PyOpenGL
+
+Votre archive (*.tgz) doit apparaître avec les noms que vous aurez renseigné à l'aide du script shell.
+
