@@ -7,7 +7,7 @@ except:
   print ("Error: PyOpenGL not installed properly !!")
   sys.exit()
 
-from primitives import disk,cylinder,cone, torus, cube_colored, stick
+from primitives import disk,cylinder,cone, torus, cube_colored, stick, rectangle
 
 
 
@@ -58,7 +58,7 @@ def wcs_zxy(size):
 # TODO : create bolts 
 def bolt(radius, height):
     # Set a unique color for the bolt, e.g., silver
-    stick(radius, radius, height, 5)
+    stick(radius, radius, height, 7)
     glPushMatrix()
     glTranslatef(0, 0, height)
     # No need for a separate disk on top as stick includes both ends
@@ -70,14 +70,24 @@ def wheel(size, n_bolts=5):
    glColor3f(0.0, 0.0, 0.0)  # Black color
    radius = size / 2
    height = size / 4
+   
    # Use cylinder for the wheel body
    cylinder(radius, radius, height, 20, 5)
-   # Add a disk on top of the cylinder
+   
+   # Add a disk on the top of the cylinder
    glPushMatrix()
    glTranslatef(0, 0, height)
    disk(0, radius, 20, 5)
    glPopMatrix()
-   # Add bolts
+
+   # Add a disk on the bottom of the cylinder (to show from the opposite side)
+   glPushMatrix()
+   glTranslatef(0, 0, 0)  # No need to translate since it's the base
+   glRotatef(180, 1, 0, 0)  # Rotate to make it face downwards
+   disk(0, radius, 20, 5)
+   glPopMatrix()
+
+   # Add bolts around the wheel
    for i in range(n_bolts):
       angle = 360 / n_bolts * i
       glPushMatrix()
@@ -88,13 +98,44 @@ def wheel(size, n_bolts=5):
       glPopMatrix()
 
 # TODO : create car : body (axe) + 4 wheels
-def car(size) :
-   # Draw the car body
-   cube_colored(size, [1.0, 0.0, 0.0])  # Red car body
-   # Wheels
-   for i in [-1, 1]:
-      for j in [-1, 1]:
-         glPushMatrix()
-         glTranslatef(i * size * 0.8, j * size * 0.8, -size / 2)
-         wheel(size / 4)  # Draw wheel
-         glPopMatrix()
+def car(size):
+
+   # Add wheels to the car
+   glPushMatrix()
+ 
+   # Créer le corps de la voiture (ici un cube coloré, mais tu peux utiliser une autre primitive)
+   glTranslatef(0, size, 0)
+   glScalef(2, 1, 1)
+   glColor3f(0.8, 0, 0) # Couleur rouge pour le corps
+   cube_colored(size) # Utiliser un cube pour représenter le corps de la voiture
+
+   # Placer les roues
+   wheel_size = size * 0.5
+   wheel_offset = size * 1
+
+   # Avant gauche
+   glPushMatrix()
+   glTranslatef(-wheel_offset, -size, wheel_offset)
+   wheel(wheel_size)
+   glPopMatrix()
+   # Avant droite
+   glPushMatrix()
+   glTranslatef(wheel_offset, -size, wheel_offset)
+   wheel(wheel_size)
+   glPopMatrix()
+
+
+   # Arrière gauche
+   glPushMatrix()
+   glTranslatef(-wheel_offset, -size, -wheel_offset)
+   glRotatef(180, 0, 1, 0)
+   wheel(wheel_size)
+   glPopMatrix()
+   # Arrière droite
+   glPushMatrix()
+   glTranslatef(wheel_offset, -size, -wheel_offset)
+   glRotatef(180, 0, 1, 0)
+   wheel(wheel_size)
+   glPopMatrix()
+
+   glPopMatrix()

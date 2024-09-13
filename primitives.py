@@ -60,6 +60,56 @@ def cube_colored(size) :
     glVertex3d(size,-size,-size)
     glEnd()
 
+def rectangle(width, height, depth):
+    # Front face (facing positive Z)
+    glBegin(GL_QUADS)
+    glVertex3f(0, 0, 0)
+    glVertex3f(width, 0, 0)
+    glVertex3f(width, height, 0)
+    glVertex3f(0, height, 0)
+    glEnd()
+
+    # Back face (facing negative Z)
+    glBegin(GL_QUADS)
+    glVertex3f(0, 0, depth)
+    glVertex3f(0, height, depth)
+    glVertex3f(width, height, depth)
+    glVertex3f(width, 0, depth)
+    glEnd()
+
+    # Left face (facing negative X)
+    glBegin(GL_QUADS)
+    glVertex3f(0, 0, 0)
+    glVertex3f(0, 0, depth)
+    glVertex3f(0, height, depth)
+    glVertex3f(0, height, 0)
+    glEnd()
+
+    # Right face (facing positive X)
+    glBegin(GL_QUADS)
+    glVertex3f(width, 0, 0)
+    glVertex3f(width, height, 0)
+    glVertex3f(width, height, depth)
+    glVertex3f(width, 0, depth)
+    glEnd()
+
+    # Top face (facing positive Y)
+    glBegin(GL_QUADS)
+    glVertex3f(0, height, 0)
+    glVertex3f(0, height, depth)
+    glVertex3f(width, height, depth)
+    glVertex3f(width, height, 0)
+    glEnd()
+
+    # Bottom face (facing negative Y)
+    glBegin(GL_QUADS)
+    glVertex3f(0, 0, 0)
+    glVertex3f(width, 0, 0)
+    glVertex3f(width, 0, depth)
+    glVertex3f(0, 0, depth)
+    glEnd()
+
+
 def sphere(radius,longitude=20,latitude=10) :
   params=gluNewQuadric()
   gluQuadricDrawStyle(params,GLU_FILL)
