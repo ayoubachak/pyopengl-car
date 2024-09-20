@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from sys import argv, exit
 from time import sleep
-from math import pi,radians,sin,cos
+from math import pi,sin,cos,sqrt,radians
 try:
   from OpenGL.GLUT import *
   from OpenGL.GL import *
@@ -38,6 +38,8 @@ c_direction=[0,0,0]
 c_viewup=[0,1,0]
 
 
+car_rho,car_theta,car_phi=0.1,0,0
+car_position=[0.0,0.0,car_rho]
 
 def gl_init() :
   # glClearColor(1.0,1.0,1.0,0.0);
@@ -67,6 +69,8 @@ def display() :
   global ox,oy,oz
   global c_position,c_direction,c_viewup
   global vehicle_position_y, wheel_rotation_angle
+  global car_rho,car_theta,car_phi
+  global car_position
   gl_init()
   glMatrixMode(GL_MODELVIEW)
   glLoadIdentity()
@@ -77,15 +81,16 @@ def display() :
   wcs(4*size)
   wcs_zxy(size)
   # wheel(size,5)
-  car(size, vehicle_position_y, vehicle_rotation_angle, wheel_rotation_angle)
-  glPushMatrix()
+  # car(size, vehicle_position_y, vehicle_rotation_angle, wheel_rotation_angle)
+  car(size, wheel_rotation_angle=wheel_rotation_angle, position=car_position, theta=car_theta)
+  # glPushMatrix()
   # glRotatef(spin,ox,oy,oz)
   # glColor3f(1.0,1.0,1.0)
   # square(size)
   # cube_colored(size)
   # wheel(size,3)
   # car(size)
-  glPopMatrix()
+  # glPopMatrix()
   glutSwapBuffers()
 
 def reshape(width,height) :
@@ -117,6 +122,10 @@ def on_keyboard_action(key, x, y) :
   global vehicle_position_y, translation_speed
   global wheel_rotation_angle, wheel_rotation_speed, wheel_rotation_direction
   global vehicle_rotation_angle, vehicle_rotation_speed, vehicle_rotation_direction
+  global car_rho,car_theta,car_phi
+  global car_position
+
+
   speed=1.0
   if key==b'a': 
    glutIdleFunc(animate)
@@ -172,32 +181,43 @@ def on_keyboard_action(key, x, y) :
     ox,oy,oz=0,0,1
     spin=0.0
   elif  key == b'u' :
-    c_theta+=0.1*speed
+    c_theta+=1*speed
     c_position[1]=c_rho*sin(radians(c_theta))*cos(radians(c_phi))
   elif  key == b'U' :
-    c_theta-=0.1*speed
+    c_theta-=1*speed
     c_position[1]=c_rho*sin(radians(c_theta))*cos(radians(c_phi))
 
   if key == b'w': # forward
-    vehicle_position_y += translation_speed
+    # vehicle_position_y += translation_speed
+    
     wheel_rotation_angle += wheel_rotation_speed * wheel_rotation_direction
     if abs(wheel_rotation_angle) >= 360.0 :
       wheel_rotation_angle = wheel_rotation_angle % 360.0
+
+    car_position[0]+=car_rho*sin(radians(car_theta))
+    car_position[2]+=car_rho*cos(radians(car_theta))
+
   elif key == b'x': # backward
-    vehicle_position_y -= translation_speed
+    # vehicle_position_y -= translation_speed
+    
     wheel_rotation_angle -= wheel_rotation_speed * wheel_rotation_direction
     if abs(wheel_rotation_angle) >= 360.0 :
       wheel_rotation_angle = wheel_rotation_angle % 360.0
+
+    car_position[0]-=0.1*size*sin(radians(car_theta))
+    car_position[2]-=0.1*size*cos(radians(car_theta))
   
   elif key == b'a': # left
-    vehicle_rotation_angle += vehicle_rotation_speed * vehicle_rotation_direction
-    if abs(vehicle_rotation_angle) >= 360.0 :
-      vehicle_rotation_angle = vehicle_rotation_angle % 360.0
+    # vehicle_rotation_angle += vehicle_rotation_speed * vehicle_rotation_direction
+    # if abs(vehicle_rotation_angle) >= 360.0 :
+    #   vehicle_rotation_angle = vehicle_rotation_angle % 360.0
+    car_theta+=speed
 
   elif key == b'd': # right
-    vehicle_rotation_angle -= vehicle_rotation_speed * vehicle_rotation_direction
-    if abs(vehicle_rotation_angle) >= 360.0 :
-      vehicle_rotation_angle = vehicle_rotation_angle % 360.0
+    # vehicle_rotation_angle -= vehicle_rotation_speed * vehicle_rotation_direction
+    # if abs(vehicle_rotation_angle) >= 360.0 :
+    #   vehicle_rotation_angle = vehicle_rotation_angle % 360.0
+    car_theta-=speed
 
 
   elif key==b's' :
@@ -208,7 +228,7 @@ def on_keyboard_action(key, x, y) :
 
 def on_special_key_action(key, x, y) :
   global c_rho,c_phi,c_position
-  speed=0.1
+  speed=1
   if key ==  GLUT_KEY_UP :
       c_rho=c_rho-speed
       c_position[0]=c_rho*sin(radians(c_phi))

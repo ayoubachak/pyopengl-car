@@ -20,7 +20,7 @@ def axe(base, height, thickness=0.2, slices=10, stacks=5):
    base_radius = base
    handle_height = height * 0.8
    head_height = height * 0.2
-   head_base = base * 1.01  
+   head_base = base * 0.8  
 
    # Handle
    glPushMatrix()
@@ -98,51 +98,60 @@ def wheel(size, n_bolts=5, wheel_rotation_angle=0):
       glPopMatrix()
 
 # TODO : create car : body (axe) + 4 wheels
-def car(size, vehicle_position_y=0, vehicle_rotation_angle=0, wheel_rotation_angle=0):
-
+def car(size, vehicle_position_y=0, vehicle_rotation_angle=0, wheel_rotation_angle=0, position : tuple = (0,0,0), theta=0):
 
    glPushMatrix()
-   glRotatef(vehicle_rotation_angle, 0, 1, 0)
-   glTranslatef(vehicle_position_y, 0, 0)
-   print("vehicle_position_y", vehicle_position_y)
-   print("wheel_rotation_angle", wheel_rotation_angle)
+   # glRotatef(vehicle_rotation_angle, 0, 1, 0)
+   # glTranslatef(vehicle_position_y, 0, 0)
+   # print("vehicle_position_y", vehicle_position_y)
+   # print("wheel_rotation_angle", wheel_rotation_angle)
+   glTranslatef(position[0],position[1],position[2])
+   glRotatef(theta,0,1,0)
+   print("position", position)
+   print("theta", theta)
+
    glTranslatef(0, size, 0)
    glScalef(2, 1, 1)
    # cube_colored(size)
    # glTranslatef(0, 0, size)
    # cone(size, size, 20, 5)
    glPushMatrix()
-   glRotatef(90, 0, 1, 0)
-   axe(base=2*size, height=size *2, thickness=0.5)
+   # glRotatef(90, 0, 1, 0)
+   glTranslatef(0, -size/4, -size * 1.2 )
+   axe(base=1.5*size, height=size *4, thickness=0.5)
    glPopMatrix()
+
    # Placer les roues
    wheel_size = size * 0.5
    wheel_offset = size * 1
 
    # Avant gauche
    glPushMatrix()
-   glTranslatef(size, 0, 0)
+   glTranslatef(size/2, 0, 0)
    glTranslatef(-wheel_offset, -size, wheel_offset)
+   glRotatef(-90, 0, 1, 0)
    wheel(wheel_size, wheel_rotation_angle=-wheel_rotation_angle)
    glPopMatrix()
-   # Avant droite
-   glPushMatrix()
-   glTranslatef(wheel_offset, -size, wheel_offset)
-   wheel(wheel_size, wheel_rotation_angle=-wheel_rotation_angle)
-   glPopMatrix()
-
-
    # Arrière gauche
    glPushMatrix()
    glTranslatef(-wheel_offset, -size, -wheel_offset)
-   glTranslatef(size, 0, 0)
-   glRotatef(180, 0, 1, 0)
+   glTranslatef(size/2, 0, 0)
+   glRotatef(-90, 0, 1, 0)
+   wheel(wheel_size, wheel_rotation_angle=-wheel_rotation_angle)
+   glPopMatrix()
+
+   # Avant droite
+   glPushMatrix()
+   glTranslatef(wheel_offset, -size, wheel_offset)
+   glTranslatef(-size/2, 0, 0)
+   glRotatef(90, 0, 1, 0)
    wheel(wheel_size, wheel_rotation_angle=wheel_rotation_angle)
    glPopMatrix()
    # Arrière droite
    glPushMatrix()
    glTranslatef(wheel_offset, -size, -wheel_offset)
-   glRotatef(180, 0, 1, 0)
+   glTranslatef(-size/2, 0, 0)
+   glRotatef(90, 0, 1, 0)
    wheel(wheel_size, wheel_rotation_angle=wheel_rotation_angle)
    glPopMatrix()
 
