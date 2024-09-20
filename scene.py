@@ -12,6 +12,19 @@ except:
 
 from primitives import floor,wcs, cube_colored
 from models import axe, wheel, car, wcs_zxy, bolt
+# car translation and wheel rotation
+from models import ( 
+  vehicle_position_y, 
+  translation_speed,
+
+  wheel_rotation_angle, 
+  wheel_rotation_speed, 
+  wheel_rotation_direction,
+  
+  vehicle_rotation_angle,
+  vehicle_rotation_speed,
+  vehicle_rotation_direction
+  )
 
 #---------------------- initialisation --------------------------
 size,theta,spin=1.0,0.0,0.0
@@ -23,6 +36,8 @@ c_position=[c_rho*sin(radians(c_phi)),0,c_rho*cos(radians(c_phi))]
 c_direction=[0,0,0]
 # camera vertical axis : Oy
 c_viewup=[0,1,0]
+
+
 
 def gl_init() :
   # glClearColor(1.0,1.0,1.0,0.0);
@@ -51,6 +66,7 @@ def display() :
   global size,spin
   global ox,oy,oz
   global c_position,c_direction,c_viewup
+  global vehicle_position_y, wheel_rotation_angle
   gl_init()
   glMatrixMode(GL_MODELVIEW)
   glLoadIdentity()
@@ -59,9 +75,9 @@ def display() :
             c_viewup[0],c_viewup[1],c_viewup[2])
   floor(10*size)
   wcs(4*size)
-  # wcs_zxy(size * 0.5)
+  wcs_zxy(size)
   # wheel(size,5)
-  car(size)
+  car(size, vehicle_position_y, vehicle_rotation_angle, wheel_rotation_angle)
   glPushMatrix()
   # glRotatef(spin,ox,oy,oz)
   # glColor3f(1.0,1.0,1.0)
@@ -82,7 +98,7 @@ def reshape(width,height) :
 #    glViewport (0,0,w,h)
 #    glMatrixMode (GL_PROJECTION)
 #    glLoadIdentity ()
-#    glFrustum (-1.0, 1.0, -1.0, 1.0,  1.0, 10.0)
+#    glFrustum (-1.0, 1.0, -1.0, 1.0,vehicle_rotation_angle  1.0, 10.0)
 
 def animate() :
     global spin
@@ -98,6 +114,9 @@ def on_keyboard_action(key, x, y) :
   global spin
   global c_theta
   global ox,oy,oz
+  global vehicle_position_y, translation_speed
+  global wheel_rotation_angle, wheel_rotation_speed, wheel_rotation_direction
+  global vehicle_rotation_angle, vehicle_rotation_speed, vehicle_rotation_direction
   speed=1.0
   if key==b'a': 
    glutIdleFunc(animate)
@@ -158,6 +177,29 @@ def on_keyboard_action(key, x, y) :
   elif  key == b'U' :
     c_theta-=0.1*speed
     c_position[1]=c_rho*sin(radians(c_theta))*cos(radians(c_phi))
+
+  if key == b'w': # forward
+    vehicle_position_y += translation_speed
+    wheel_rotation_angle += wheel_rotation_speed * wheel_rotation_direction
+    if abs(wheel_rotation_angle) >= 360.0 :
+      wheel_rotation_angle = wheel_rotation_angle % 360.0
+  elif key == b'x': # backward
+    vehicle_position_y -= translation_speed
+    wheel_rotation_angle -= wheel_rotation_speed * wheel_rotation_direction
+    if abs(wheel_rotation_angle) >= 360.0 :
+      wheel_rotation_angle = wheel_rotation_angle % 360.0
+  
+  elif key == b'a': # left
+    vehicle_rotation_angle += vehicle_rotation_speed * vehicle_rotation_direction
+    if abs(vehicle_rotation_angle) >= 360.0 :
+      vehicle_rotation_angle = vehicle_rotation_angle % 360.0
+
+  elif key == b'd': # right
+    vehicle_rotation_angle -= vehicle_rotation_speed * vehicle_rotation_direction
+    if abs(vehicle_rotation_angle) >= 360.0 :
+      vehicle_rotation_angle = vehicle_rotation_angle % 360.0
+
+
   elif key==b's' :
     exit(0)
   else :
