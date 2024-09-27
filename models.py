@@ -99,7 +99,7 @@ def wheel(size, n_bolts=5, wheel_rotation_angle=0):
 
 # TODO : create car : body (axe) + 4 wheels
 def car(size, vehicle_position_y=0, vehicle_rotation_angle=0, wheel_rotation_angle=0, position : tuple = (0,0,0), theta=0):
-
+   size = size / 2
    glPushMatrix()
    # glRotatef(vehicle_rotation_angle, 0, 1, 0)
    # glTranslatef(vehicle_position_y, 0, 0)
@@ -117,12 +117,12 @@ def car(size, vehicle_position_y=0, vehicle_rotation_angle=0, wheel_rotation_ang
    # cone(size, size, 20, 5)
    glPushMatrix()
    # glRotatef(90, 0, 1, 0)
-   glTranslatef(0, -size/4, -size * 1.2 )
-   axe(base=1.5*size, height=size *4, thickness=0.5)
+   glTranslatef(0, -size/4, -size * 2 )
+   axe(base=1.5*size, height=size *5, thickness=0.5)
    glPopMatrix()
 
    # Placer les roues
-   wheel_size = size * 0.5
+   wheel_size = size * 1
    wheel_offset = size * 1
 
    # Avant gauche
